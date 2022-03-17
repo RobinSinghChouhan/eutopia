@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1097792524427:android:9f8917e04099f987c9448e",
+        "mobilesdk_app_id": "1:1097792524427:android:acdc297fcae11972c9448e",
         "android_client_info": {
-          "package_name": "om.codigo.eutopia"
+          "package_name": "com.codigo.eutopia"
         }
       },
       "oauth_client": [
