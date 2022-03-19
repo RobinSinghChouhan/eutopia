@@ -1,6 +1,10 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 void main() {
   runApp(const MyApp());
 }
@@ -50,35 +54,74 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final picker = ImagePicker();
+  // firebase_storage _storage = FirebaseStorage.instance;
+
 
   int _counter = 0;
 
 
 
 
-  void _incrementCounter() {
-    setState(() {
+  // void _incrementCounter() {
+  //   setState(() {
+  //
+  //     _counter++;
+  //   });
+  // }
+  FirebaseAuth mAuth = FirebaseAuth.instance;
 
-      _counter++;
+  void signInAnonymously() async {
+    // UserCredential userCredential = await FirebaseAuth.instance.signInAnonymously();
+
+    mAuth.signInAnonymously().then((result){
+      setState(() {
+        // final User? user = result.user;
+      });
     });
+  }
+
+  Future<String> uploadPic() async {
+
+    //Get the file from the image picker and store it
+    final image = await picker.pickImage(source: ImageSource.gallery);
+
+    //Create a reference to the location you want to upload to in firebase
+    firebase_storage.Reference reference = firebase_storage.FirebaseStorage.instance.ref().child("images/");
+
+    //Upload the file to firebase
+    File file = File(image!.path);
+    // if(image?.path!=null){
+      firebase_storage.UploadTask uploadTask = reference.putFile(file);
+    // }
+
+    // Waits till the file is uploaded then stores the download url
+
+    firebase_storage.TaskSnapshot taskSnapshot = await uploadTask.snapshot;
+
+    // Waits till the file is uploaded then stores the download url
+    String url = await taskSnapshot.ref.getDownloadURL();
+
+    //returns the download url
+    return url;
   }
 
   @override
   Widget build(BuildContext context) {
-
-    CollectionReference users = FirebaseFirestore.instance.collection('users');
-    Future<void> addUser() {
-      // Call the user's CollectionReference to add a new user
-
-      return users
-          .add({
-        'full_name': 'Robin Singh', // John Doe
-        'company': 'Codigo', // Stokes and Sons
-        'age': '22' // 42
-      })
-          .then((value) => print("User Added"))
-          .catchError((error) => print("Failed to add user: $error"));
-    }
+signInAnonymously();
+    // CollectionReference users = FirebaseFirestore.instance.collection('users');
+    // Future<void> addUser() {
+    //   // Call the user's CollectionReference to add a new user
+    //
+    //   return users
+    //       .add({
+    //     'full_name': 'Robin Singh', // John Doe
+    //     'company': 'Codigo', // Stokes and Sons
+    //     'age': '22' // 42
+    //   })
+    //       .then((value) => print("User Added"))
+    //       .catchError((error) => print("Failed to add user: $error"));
+    // }
 
     return Scaffold(
       appBar: AppBar(
@@ -99,7 +142,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: addUser,
+        onPressed: uploadPic,
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ),
