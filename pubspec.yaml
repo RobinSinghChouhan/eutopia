@@ -51,6 +51,8 @@ dev_dependencies:
   cloud_firestore: ^3.1.10
   image_picker: ^0.8.3+3
   firebase_storage: ^10.2.9
+  google_fonts: ^2.3.1
+  google_sign_in: ^5.2.4
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

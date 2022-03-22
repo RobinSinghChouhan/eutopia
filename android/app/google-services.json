@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1097792524427-8u29jul3p83okl8276bof9fhjptm1383.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.codigo.eutopia",
+            "certificate_hash": "2962ae9d95d71b34f5b9367f6d32e193dda287fd"
+          }
+        },
+        {
           "client_id": "1097792524427-14eqdmhjhe0b0safru2b18nr5jbg8r5i.apps.googleusercontent.com",
           "client_type": 3
         }
