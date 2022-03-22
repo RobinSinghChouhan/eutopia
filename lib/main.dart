@@ -103,6 +103,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     // Waits till the file is uploaded then stores the download url
     String url = await taskSnapshot.ref.getDownloadURL();
+    print(url);
 
     //returns the download url
     return url;
@@ -110,7 +111,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-signInAnonymously();
+// signInAnonymously();
     // CollectionReference users = FirebaseFirestore.instance.collection('users');
     // Future<void> addUser() {
     //   // Call the user's CollectionReference to add a new user
