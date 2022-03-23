@@ -13,8 +13,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  GoogleSignIn _googleSignIn = GoogleSignIn();
-  late GoogleSignInAccount? _currentUser;
+
 
 
 
