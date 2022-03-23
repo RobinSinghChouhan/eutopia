@@ -1,6 +1,9 @@
-import 'package:eutopia/main.dart';
+
+import 'package:eutopia/authentication.dart';
+import 'package:eutopia/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -11,29 +14,20 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   GoogleSignIn _googleSignIn = GoogleSignIn();
-  GoogleSignInAccount? _currentUser;
+  late GoogleSignInAccount? _currentUser;
 
-  initState(){
-    super.initState();
-    _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount? account) {
-      setState(() {
-        _currentUser = account;
-        print(_currentUser!.email.toString());
-      });
-      if (_currentUser != null) {
-        // _handleGetContact(_currentUser!);
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) => MyHomePage(title: "My New App")));
-      }
-    });
-    _googleSignIn.signInSilently();
-  }
+
 
   Future<void> _handleSignIn() async{
-    try{
-      await _googleSignIn.signIn();
-    }catch(error){
-      print(error);
-    }
+    // try{
+    //   await _googleSignIn.signIn();
+    // }catch(error){
+    //   print(error);
+    // }
+    User? user = await Authentication.signInWithGoogle(context: context);
+
+    print(user?.displayName.toString());
+    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>MainScreen(user: user)));
   }
 
   @override
@@ -57,7 +51,15 @@ class _LoginScreenState extends State<LoginScreen> {
                 fontSize: 25,
                 color: Colors.black,
               ),),
-            TextButton(onPressed: _handleSignIn, child: const Text("Sign in with google")),
+            FutureBuilder(future: Authentication.initializeFirebase(),builder: (context,snapshot){
+                if(snapshot.hasError){
+                  return Text("Error");
+                }else{
+              return TextButton(onPressed: _handleSignIn, child: const Text("Sign in with google"));
+
+              }
+            })
+
           ],
         ),
       ),
