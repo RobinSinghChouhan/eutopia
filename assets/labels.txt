@@ -1,0 +1,5 @@
+0 Buildings
+1 Sea
+2 Street
+3 Mountain
+4 Forest

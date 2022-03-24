@@ -30,6 +30,7 @@ class _MainScreenState extends State<MainScreen> {
     final image = await picker.pickImage(source: ImageSource.gallery);
     setState(() {
       img_path = image!.path;
+      print("IMAGEPATH:  " + img_path);
     });
     // return image!.path;
   }
@@ -50,8 +51,8 @@ class _MainScreenState extends State<MainScreen> {
           size: 28,
         ),
         onPressed: () {
-          setState(() {
-            _pickImage();
+          setState(() async {
+            await _pickImage();
             selected = 2;
           });
         },
