@@ -6,6 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+
 void main() {
   runApp(const MyApp());
 }
@@ -28,6 +29,7 @@ class _MyAppState extends State<MyApp> {
       setState(() {});
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -40,15 +42,10 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
 
-
-
   final String title;
-
-
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -59,11 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final picker = ImagePicker();
   // firebase_storage _storage = FirebaseStorage.instance;
 
-
   int _counter = 0;
-
-
-
 
   // void _incrementCounter() {
   //   setState(() {
@@ -76,7 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void signInAnonymously() async {
     // UserCredential userCredential = await FirebaseAuth.instance.signInAnonymously();
 
-    mAuth.signInAnonymously().then((result){
+    mAuth.signInAnonymously().then((result) {
       setState(() {
         // final User? user = result.user;
       });
@@ -84,17 +77,17 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<String> uploadPic() async {
-
     //Get the file from the image picker and store it
     final image = await picker.pickImage(source: ImageSource.gallery);
 
     //Create a reference to the location you want to upload to in firebase
-    firebase_storage.Reference reference = firebase_storage.FirebaseStorage.instance.ref().child("images/");
+    firebase_storage.Reference reference =
+        firebase_storage.FirebaseStorage.instance.ref().child("images/");
 
     //Upload the file to firebase
     File file = File(image!.path);
     // if(image?.path!=null){
-      firebase_storage.UploadTask uploadTask = reference.putFile(file);
+    firebase_storage.UploadTask uploadTask = reference.putFile(file);
     // }
 
     // Waits till the file is uploaded then stores the download url

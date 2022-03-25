@@ -1,30 +1,50 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:tflite/tflite.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 class PostScreen extends StatefulWidget {
-  const PostScreen({Key? key, required this.path}) : super(key: key);
-  final String path;
+  const PostScreen({Key? key, @required this.user}) : super(key: key);
+  final User? user;
   @override
   State<PostScreen> createState() => _PostScreenState();
 }
 
 class _PostScreenState extends State<PostScreen> {
+  final myController = TextEditingController();
+
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
   String path = "";
   bool isImageLoaded = false;
+
+  final picker = ImagePicker();
+  String img_path = "";
 
   List? _result;
   String _confidence = "";
   String _name = "";
 
   String numbers = "";
+  String url = "";
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     loadMyModel();
+  }
+
+  Future<void> _pickImage() async {
+    final image = await picker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      img_path = image!.path;
+      applyModelOnImage(img_path);
+      print("IMAGEPATH:  " + img_path);
+    });
+    // return image!.path;
   }
 
   loadMyModel() async {
@@ -43,8 +63,7 @@ class _PostScreenState extends State<PostScreen> {
     // File('thumbnail.png').writeAsBytesSync(img.encodePng(thumbnail));
 
     var res = await Tflite.runModelOnImage(
-        path:
-            "/data/user/0/com.codigo.eutopia/cache/image_picker6367354473638688565.jpg",
+        path: paths,
         numResults: 6,
         threshold: 0.5,
         imageMean: 127.5,
@@ -61,9 +80,62 @@ class _PostScreenState extends State<PostScreen> {
     });
   }
 
+  Future<String> uploadPic() async {
+    //Get the file from the image picker and store it
+    // final image = await picker.pickImage(source: ImageSource.gallery);
+
+    //Create a reference to the location you want to upload to in firebase
+    var time = DateTime.now().millisecondsSinceEpoch.toString();
+    firebase_storage.Reference reference = firebase_storage
+        .FirebaseStorage.instance
+        .ref()
+        .child("images/$time.png");
+
+    //Upload the file to firebase
+    File file = File(img_path);
+    // if(image?.path!=null){
+    // firebase_storage.UploadTask uploadTask =
+    // }
+
+    // Waits till the file is uploaded then stores the download url
+
+    firebase_storage.TaskSnapshot taskSnapshot = await reference.putFile(file);
+
+    // Waits till the file is uploaded then stores the download url
+    url = await taskSnapshot.ref.getDownloadURL();
+    // url = await firebase_storage.FirebaseStorage.instance
+    //     .ref('images/$time.png')
+    //     .getDownloadURL();
+    print(url);
+    addUser(url);
+    //returns the download url
+    return url;
+  }
+
+  Future<void> addUser(String url) {
+    // Call the user's CollectionReference to add a new user
+    CollectionReference users = FirebaseFirestore.instance.collection('posts');
+    return users
+        .add({
+          'username': widget.user?.displayName, // John Doe
+          'email': widget.user?.email,
+          'user_img': widget.user?.photoURL, // Stokes and Sons
+          'url': url,
+          'caption': myController.text // 42
+        })
+        .then((value) => print("User Added"))
+        .catchError((error) => print("Failed to add user: $error"));
+  }
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    myController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    applyModelOnImage(path);
     return Container(
       width: MediaQuery.of(context).size.width,
       padding: const EdgeInsets.only(
@@ -73,15 +145,54 @@ class _PostScreenState extends State<PostScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-              child: ClipRRect(
+          Text("POST"),
+          SizedBox(
+            height: 10.0,
+          ),
+          Row(
+            children: [
+              GestureDetector(
+                onTap: () {
+                  _pickImage();
+                },
+                child: ClipRRect(
                   borderRadius: BorderRadius.circular(20.0),
-                  child: Image.file(
-                    File(widget.path),
-                    fit: BoxFit.cover,
-                    height: 150.0,
-                    width: 180.0,
-                  ))),
+                  child: img_path == ""
+                      ? Container(
+                          height: 150.0,
+                          width: 180.0,
+                          color: Colors.grey,
+                        )
+                      : Image.file(
+                          File(img_path),
+                          fit: BoxFit.cover,
+                          height: 150.0,
+                          width: 180.0,
+                        ),
+                ),
+              ),
+              Column(
+                children: [
+                  Text("Predicted Category:"),
+                  Text(_name),
+                  Text("Confidence"),
+                  Text(_confidence),
+                ],
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 10.0,
+          ),
+          TextField(
+            controller: myController,
+            keyboardType: TextInputType.multiline,
+            minLines: 2, //Normal textInputField will be displayed
+            maxLines: 5,
+            decoration: InputDecoration(
+                labelText: 'Enter Name', hintText: 'Enter Your Name'),
+          ),
+          TextButton(onPressed: () => uploadPic(), child: Text("Print")),
         ],
       ),
     );

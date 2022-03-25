@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:image_picker/image_picker.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key, required this.user}) : super(key: key);
@@ -19,20 +18,11 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int selected = 0;
-  final picker = ImagePicker();
-  late String img_path;
+
   Future<void>? _handleSignOut() {
     Authentication.signOut(context: context);
-    return null;
-  }
 
-  Future<void> _pickImage() async {
-    final image = await picker.pickImage(source: ImageSource.gallery);
-    setState(() {
-      img_path = image!.path;
-      print("IMAGEPATH:  " + img_path);
-    });
-    // return image!.path;
+    return null;
   }
 
   @override
@@ -51,9 +41,12 @@ class _MainScreenState extends State<MainScreen> {
           size: 28,
         ),
         onPressed: () {
-          setState(() async {
-            await _pickImage();
+          setState(() {
+            // _pickImage();
+            // if (img_path == "") {
+            // } else {
             selected = 2;
+            // }
           });
         },
         //params
@@ -110,7 +103,8 @@ class _MainScreenState extends State<MainScreen> {
                 : selected == 1
                     ? AccountScreen()
                     : PostScreen(
-                        path: img_path,
+                        // path: img_path,
+                        user: widget.user,
                       ),
           ),
         ],
