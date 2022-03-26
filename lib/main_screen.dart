@@ -67,10 +67,15 @@ class _MainScreenState extends State<MainScreen> {
         notchSmoothness: NotchSmoothness.verySmoothEdge,
       ),
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
             padding: const EdgeInsets.only(
-                top: 40.0, left: 10.0, right: 10.0, bottom: 10.0),
+              top: 40.0,
+              left: 10.0,
+              right: 10.0,
+              bottom: 0,
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
