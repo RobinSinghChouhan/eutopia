@@ -104,7 +104,9 @@ class _MainScreenState extends State<MainScreen> {
           ),
           Expanded(
             child: selected == 0
-                ? HomeScreen()
+                ? HomeScreen(
+                    ctxt: context,
+                  )
                 : selected == 1
                     ? AccountScreen()
                     : PostScreen(

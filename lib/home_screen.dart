@@ -1,11 +1,12 @@
+import 'package:eutopia/comment_screen.dart';
 import 'package:eutopia/posts_class.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
-
+  const HomeScreen({Key? key, required this.ctxt}) : super(key: key);
+  final BuildContext ctxt;
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -30,18 +31,22 @@ class _HomeScreenState extends State<HomeScreen> {
         querySnapshot.docs.elementAt(i).get("username"),
         querySnapshot.docs.elementAt(i).id,
       );
+      ;
       postsList.add(post);
     }
     //
-
-    print(postsList[0].url);
+    setState(() {
+      print(postsList[0].url);
+    });
   }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    getData();
+    setState(() {
+      getData();
+    });
   }
 
   @override
@@ -88,7 +93,25 @@ class _HomeScreenState extends State<HomeScreen> {
                       width: MediaQuery.of(context).size.width - 20.0,
                       fit: BoxFit.contain,
                     ),
-                    Text(postsList[index].caption),
+                    Row(
+                      children: [
+                        Container(
+                          child: Text(postsList[index].caption),
+                        ),
+                        GestureDetector(
+                          child: Icon(Icons.messenger_outline_outlined),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => CommentScreen(
+                                        postId: postsList[index].id,
+                                      )),
+                            );
+                          },
+                        )
+                      ],
+                    ),
                     SizedBox(
                       height: 10.0,
                     )
