@@ -181,7 +181,7 @@ class _PostScreenState extends State<PostScreen> {
               ),
             ],
           ),
-          SizedBox(
+          const SizedBox(
             height: 10.0,
           ),
           TextField(

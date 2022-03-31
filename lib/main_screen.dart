@@ -105,7 +105,7 @@ class _MainScreenState extends State<MainScreen> {
           Expanded(
             child: selected == 0
                 ? HomeScreen(
-                    ctxt: context,
+                    user: widget.user,
                   )
                 : selected == 1
                     ? AccountScreen()

@@ -2,11 +2,12 @@ import 'package:eutopia/comment_screen.dart';
 import 'package:eutopia/posts_class.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key, required this.ctxt}) : super(key: key);
-  final BuildContext ctxt;
+  const HomeScreen({Key? key, required this.user}) : super(key: key);
+  final User? user;
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -106,6 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               MaterialPageRoute(
                                   builder: (context) => CommentScreen(
                                         postId: postsList[index].id,
+                                        user: widget.user,
                                       )),
                             );
                           },
