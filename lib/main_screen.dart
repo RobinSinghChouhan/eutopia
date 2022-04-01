@@ -21,7 +21,6 @@ class _MainScreenState extends State<MainScreen> {
 
   Future<void>? _handleSignOut() {
     Authentication.signOut(context: context);
-
     return null;
   }
 
