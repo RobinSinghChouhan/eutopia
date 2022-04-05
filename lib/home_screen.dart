@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key, required this.user}) : super(key: key);
@@ -15,7 +16,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final CollectionReference _collectionRef =
       FirebaseFirestore.instance.collection('posts');
-  final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
   List<Posts> postsList = [];
   Future<void> getData() async {
     // Get docs from collection reference
@@ -32,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
         querySnapshot.docs.elementAt(i).get("username"),
         querySnapshot.docs.elementAt(i).id,
       );
-      ;
+
       postsList.add(post);
     }
     //
@@ -43,7 +43,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     setState(() {
       getData();
@@ -53,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 10.0),
+      margin: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
       child: MediaQuery.removePadding(
         removeTop: true,
         context: context,
@@ -61,14 +60,15 @@ class _HomeScreenState extends State<HomeScreen> {
             itemCount: postsList.length,
             itemBuilder: (BuildContext context, int index) {
               return Container(
+                margin: EdgeInsets.only(top: index == 0 ? 20.0 : 15.0),
                 child: Column(
                   children: [
                     Row(
                       children: [
                         CircleAvatar(
-                          radius: 20,
+                          radius: 23,
                           child: ClipRRect(
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(25),
                             child: CachedNetworkImage(
                               imageUrl: postsList[index].user_img,
                               progressIndicatorBuilder:
@@ -76,31 +76,67 @@ class _HomeScreenState extends State<HomeScreen> {
                                       CircularProgressIndicator(
                                           value: downloadProgress.progress),
                               errorWidget: (context, url, error) =>
-                                  Icon(Icons.error),
+                                  const Icon(Icons.error),
                             ),
                           ),
                         ),
-                        Text(postsList[index].name),
+                        const SizedBox(
+                          width: 10.0,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              postsList[index].name,
+                              style: GoogleFonts.notoSans(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            Text(
+                              postsList[index].email.substring(
+                                  0, postsList[index].email.length - 10),
+                              style: GoogleFonts.notoSans(
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
-                    CachedNetworkImage(
-                      imageUrl: postsList[index].url,
-                      progressIndicatorBuilder:
-                          (context, url, downloadProgress) =>
-                              CircularProgressIndicator(
-                                  value: downloadProgress.progress),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
-                      height: 200.0,
-                      width: MediaQuery.of(context).size.width - 20.0,
-                      fit: BoxFit.contain,
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(10.0),
+                      child: Container(
+                        margin: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+                        child: CachedNetworkImage(
+                          imageUrl: postsList[index].url,
+                          progressIndicatorBuilder:
+                              (context, url, downloadProgress) =>
+                                  CircularProgressIndicator(
+                                      value: downloadProgress.progress),
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.error),
+                          height: 200.0,
+                          width: MediaQuery.of(context).size.width - 20.0,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
                     ),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Container(
-                          child: Text(postsList[index].caption),
+                        Text(
+                          postsList[index].caption,
+                          style: GoogleFonts.notoSans(
+                            fontSize: 14,
+                          ),
                         ),
                         GestureDetector(
-                          child: Icon(Icons.messenger_outline_outlined),
+                          child: const Image(
+                            image: AssetImage("assets/comment.png"),
+                            width: 30.0,
+                            height: 30.0,
+                          ),
                           onTap: () {
                             Navigator.push(
                               context,
@@ -114,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         )
                       ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10.0,
                     )
                   ],

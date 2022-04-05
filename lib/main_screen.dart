@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key, required this.user}) : super(key: key);
@@ -70,7 +71,7 @@ class _MainScreenState extends State<MainScreen> {
         children: [
           Container(
             padding: const EdgeInsets.only(
-              top: 40.0,
+              top: 45.0,
               left: 10.0,
               right: 10.0,
               bottom: 0,
@@ -78,7 +79,24 @@ class _MainScreenState extends State<MainScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text("Eutopia"),
+                Row(
+                  children: [
+                    const CircleAvatar(
+                      radius: 25.0,
+                      backgroundImage: AssetImage("assets/logoe.jpg"),
+                    ),
+                    const SizedBox(
+                      width: 5.0,
+                    ),
+                    Text(
+                      "Eutopia",
+                      style: GoogleFonts.notoSans(
+                        fontSize: 30.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
                 GestureDetector(
                   onTap: () {
                     _handleSignOut();
@@ -97,7 +115,7 @@ class _MainScreenState extends State<MainScreen> {
                       ),
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ),
