@@ -25,8 +25,8 @@ class _CommentScreenState extends State<CommentScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    commentsList.clear();
     getData();
     _controller = TextEditingController();
     _classifier = Classifier();
@@ -118,8 +118,6 @@ class _CommentScreenState extends State<CommentScreen> {
                   } else {
                     status = 1;
                   }
-                  addComment(status);
-                  print("POSITIVE: " + _positive.toString());
                 }
                 showDialog(
                     context: context,
