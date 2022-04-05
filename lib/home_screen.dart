@@ -52,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
+      margin: const EdgeInsets.only(top: 10.0, left: 15.0, right: 15.0),
       child: MediaQuery.removePadding(
         removeTop: true,
         context: context,
