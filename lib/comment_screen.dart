@@ -97,7 +97,7 @@ class _CommentScreenState extends State<CommentScreen> {
           children: [
             Expanded(
               child: TextField(
-                cursorColor: Color(0xff1f0a45),
+                cursorColor: const Color(0xff1f0a45),
                 decoration: const InputDecoration.collapsed(
                     hintText: "Type Comment Here"),
                 style: GoogleFonts.notoSans(
@@ -123,7 +123,7 @@ class _CommentScreenState extends State<CommentScreen> {
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        content: Container(
+                        content: SizedBox(
                           height: MediaQuery.of(context).size.height * 0.25,
                           child: Column(
                             children: [
@@ -172,7 +172,7 @@ class _CommentScreenState extends State<CommentScreen> {
                                 child: Container(
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10.0),
-                                    color: Color(0xff1f0a45),
+                                    color: const Color(0xff1f0a45),
                                   ),
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 50.0, vertical: 10.0),
@@ -184,7 +184,7 @@ class _CommentScreenState extends State<CommentScreen> {
                                     ),
                                   ),
                                 ),
-                              )
+                              ),
                             ],
                           ),
                         ),

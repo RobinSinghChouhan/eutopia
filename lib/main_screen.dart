@@ -42,10 +42,19 @@ class _MainScreenState extends State<MainScreen> {
         ),
         onPressed: () {
           setState(() {
-            // _pickImage();
+            //   _pickImage();
             // if (img_path == "") {
             // } else {
-            selected = 2;
+            selected = 0;
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => PostScreen(
+                  // path: img_path,
+                  user: widget.user,
+                ),
+              ),
+            );
             // }
           });
         },
@@ -56,6 +65,7 @@ class _MainScreenState extends State<MainScreen> {
         onTap: (index) {
           setState(() {
             selected = index;
+            print("Indexd: " + index.toString());
           });
         },
         icons: const [Icons.home, Icons.settings],
@@ -98,9 +108,7 @@ class _MainScreenState extends State<MainScreen> {
                   ],
                 ),
                 GestureDetector(
-                  onTap: () {
-                    _handleSignOut();
-                  },
+                  onTap: () {},
                   child: CircleAvatar(
                     radius: 25,
                     child: ClipRRect(
@@ -111,7 +119,8 @@ class _MainScreenState extends State<MainScreen> {
                             (context, url, downloadProgress) =>
                                 CircularProgressIndicator(
                                     value: downloadProgress.progress),
-                        errorWidget: (context, url, error) => Icon(Icons.error),
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error),
                       ),
                     ),
                   ),
@@ -120,17 +129,11 @@ class _MainScreenState extends State<MainScreen> {
             ),
           ),
           Expanded(
-            child: selected == 0
-                ? HomeScreen(
-                    user: widget.user,
-                  )
-                : selected == 1
-                    ? AccountScreen()
-                    : PostScreen(
-                        // path: img_path,
-                        user: widget.user,
-                      ),
-          ),
+              child: selected == 0
+                  ? HomeScreen(
+                      user: widget.user,
+                    )
+                  : const AccountScreen()),
         ],
       ),
     );
