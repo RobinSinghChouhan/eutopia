@@ -10,8 +10,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 class PostScreen extends StatefulWidget {
-  const PostScreen({Key? key, @required this.user}) : super(key: key);
+  const PostScreen({Key? key, @required this.user, required this.img})
+      : super(key: key);
   final User? user;
+  final String img;
   @override
   State<PostScreen> createState() => _PostScreenState();
 }
@@ -42,6 +44,7 @@ class _PostScreenState extends State<PostScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    print("IMGPP: " + img_path.toString());
     loadMyModel();
   }
 
@@ -78,6 +81,7 @@ class _PostScreenState extends State<PostScreen> {
     print("Result after loading model: $resultant");
     String input = await loadAsset(context, "other");
     otherList = input.split('\n');
+    applyModelOnImage(widget.img);
   }
 
   applyModelOnImage(String paths) async {
@@ -126,7 +130,7 @@ class _PostScreenState extends State<PostScreen> {
         .child("images/$time.png");
 
     //Upload the file to firebase
-    File file = File(img_path);
+    File file = File(widget.img);
     // if(image?.path!=null){
     // firebase_storage.UploadTask uploadTask =
     // }
@@ -215,7 +219,7 @@ class _PostScreenState extends State<PostScreen> {
                       onTap: () {},
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(20.0),
-                        child: img_path == ""
+                        child: widget.img == ""
                             ? Container(
                                 height: 220.0,
                                 width: MediaQuery.of(context).size.width - 20.0,
@@ -224,7 +228,7 @@ class _PostScreenState extends State<PostScreen> {
                             : Container(
                                 color: Colors.grey.withOpacity(0.4),
                                 child: Image.file(
-                                  File(img_path),
+                                  File(widget.img),
                                   fit: BoxFit.contain,
                                   height: 220.0,
                                   width:

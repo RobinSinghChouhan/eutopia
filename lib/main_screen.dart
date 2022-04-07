@@ -6,6 +6,7 @@ import 'package:eutopia/home_screen.dart';
 import 'package:eutopia/post_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -19,10 +20,34 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int selected = 0;
-
+  String img_path = "";
+  final picker = ImagePicker();
   Future<void>? _handleSignOut() {
     Authentication.signOut(context: context);
     return null;
+  }
+
+  Future<void> _pickImage() async {
+    final image = await picker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      img_path = image!.path;
+      print("IMAGEPATH:  " + img_path);
+      redirectNow();
+    });
+    // return image!.path;
+  }
+
+  void redirectNow() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PostScreen(
+          // path: img_path,
+          user: widget.user,
+          img: img_path,
+        ),
+      ),
+    );
   }
 
   @override
@@ -40,21 +65,15 @@ class _MainScreenState extends State<MainScreen> {
           Icons.qr_code_scanner_rounded,
           size: 28,
         ),
-        onPressed: () {
+        onPressed: () async {
+          _pickImage();
           setState(() {
             //   _pickImage();
             // if (img_path == "") {
             // } else {
-            selected = 0;
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => PostScreen(
-                  // path: img_path,
-                  user: widget.user,
-                ),
-              ),
-            );
+            if (img_path == "") {
+              selected = 0;
+            } else {}
             // }
           });
         },
