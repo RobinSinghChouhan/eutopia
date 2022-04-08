@@ -58,13 +58,14 @@ class _CommentScreenState extends State<CommentScreen> {
         querySnapshot.docs.elementAt(i).get("user_img"),
         querySnapshot.docs.elementAt(i).get("username"),
         querySnapshot.docs.elementAt(i).id,
+        querySnapshot.docs.elementAt(i).get("time"),
       );
-
       commentsList.add(post);
     }
+    commentsList.sort((a, b) => a.time.compareTo(b.time));
     //
     setState(() {
-      print(commentsList.toString());
+      print(commentsList[0].time.toString());
     });
   }
 
@@ -81,6 +82,7 @@ class _CommentScreenState extends State<CommentScreen> {
           'user_img': widget.user?.photoURL, // Stokes and Sons
           'comment': _controller.text, // 42
           'status': status,
+          'time': DateTime.now().millisecondsSinceEpoch.toString(),
         })
         .then((value) => print("Comment Added"))
         .catchError((error) => print("Failed to add user: $error"));

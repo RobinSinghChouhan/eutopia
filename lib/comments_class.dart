@@ -5,9 +5,16 @@ class Comments {
   String _user_img;
   String _name;
   String _id;
+  String _time;
 
   Comments(this._comment, this._status, this._email, this._user_img, this._name,
-      this._id);
+      this._id, this._time);
+
+  String get time => _time;
+
+  set time(String value) {
+    _time = value;
+  }
 
   String get comment => _comment;
 

@@ -7,9 +7,16 @@ class Posts {
   String _user_img;
   String _name;
   String _id;
+  String _time;
 
   Posts(this._caption, this._email, this._url, this._user_img, this._name,
-      this._id);
+      this._id, this._time);
+
+  String get time => _time;
+
+  set time(String value) {
+    _time = value;
+  }
 
   String get name => _name;
 

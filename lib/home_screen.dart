@@ -17,6 +17,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final CollectionReference _collectionRef =
       FirebaseFirestore.instance.collection('posts');
   List<Posts> postsList = [];
+
   Future<void> getData() async {
     // Get docs from collection reference
     QuerySnapshot querySnapshot = await _collectionRef.get();
@@ -31,10 +32,12 @@ class _HomeScreenState extends State<HomeScreen> {
         querySnapshot.docs.elementAt(i).get("user_img"),
         querySnapshot.docs.elementAt(i).get("username"),
         querySnapshot.docs.elementAt(i).id,
+        querySnapshot.docs.elementAt(i).get("time"),
       );
-
       postsList.add(post);
     }
+
+    postsList.sort((a, b) => a.time.compareTo(b.time));
     //
     setState(() {
       print(postsList[0].url);
@@ -108,6 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       borderRadius: BorderRadius.circular(10.0),
                       child: Container(
                         margin: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+                        color: Colors.grey.withOpacity(0.1),
                         child: CachedNetworkImage(
                           imageUrl: postsList[index].url,
                           progressIndicatorBuilder:

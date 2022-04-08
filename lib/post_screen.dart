@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:tflite/tflite.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -39,6 +38,7 @@ class _PostScreenState extends State<PostScreen> {
   String caption = "";
   var predList = [];
   var otherList = [];
+  bool isLoaded = false;
 
   @override
   void initState() {
@@ -110,6 +110,7 @@ class _PostScreenState extends State<PostScreen> {
       print(_result.toString());
 
       selected = _name;
+      isLoaded = true;
     });
 
     String fileText = await loadAsset(context, selected);
@@ -159,7 +160,8 @@ class _PostScreenState extends State<PostScreen> {
           'email': widget.user?.email,
           'user_img': widget.user?.photoURL, // Stokes and Sons
           'url': url,
-          'caption': myController.text // 42
+          'caption': myController.text,
+          'time':DateTime.now().millisecondsSinceEpoch.toString(),// 42
         })
         .then((value) => print("User Added"))
         .catchError((error) => print("Failed to add user: $error"));
@@ -175,243 +177,254 @@ class _PostScreenState extends State<PostScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Container(
-          margin: const EdgeInsets.only(top: 40.0, left: 15.0, right: 15.0),
-          width: MediaQuery.of(context).size.width,
-          padding: const EdgeInsets.only(
-            left: 10.0,
-            right: 10.0,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  IconButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      icon: const Icon(
-                        Icons.arrow_back,
-                        size: 35.0,
-                      )),
-                  SizedBox(
-                    width: 10.0,
-                  ),
-                  Text(
-                    "New Post",
-                    textAlign: TextAlign.start,
-                    style: GoogleFonts.notoSans(
-                      fontSize: 30.0,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-              Container(
-                height: 250.0,
-                margin: const EdgeInsets.only(top: 15.0),
-                width: MediaQuery.of(context).size.width - 30,
-                child: Stack(
+      body: isLoaded
+          ? SingleChildScrollView(
+              child: Container(
+                margin:
+                    const EdgeInsets.only(top: 40.0, left: 15.0, right: 15.0),
+                width: MediaQuery.of(context).size.width,
+                padding: const EdgeInsets.only(
+                  left: 10.0,
+                  right: 10.0,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    GestureDetector(
-                      onTap: () {},
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(20.0),
-                        child: widget.img == ""
-                            ? Container(
-                                height: 220.0,
-                                width: MediaQuery.of(context).size.width - 20.0,
-                                color: Colors.grey,
-                              )
-                            : Container(
-                                color: Colors.grey.withOpacity(0.4),
-                                child: Image.file(
-                                  File(widget.img),
-                                  fit: BoxFit.contain,
-                                  height: 220.0,
-                                  width:
-                                      MediaQuery.of(context).size.width - 20.0,
-                                ),
-                              ),
-                      ),
+                    Row(
+                      children: [
+                        IconButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            icon: const Icon(
+                              Icons.arrow_back,
+                              size: 35.0,
+                            )),
+                        const SizedBox(
+                          width: 10.0,
+                        ),
+                        Text(
+                          "New Post",
+                          textAlign: TextAlign.start,
+                          style: GoogleFonts.notoSans(
+                            fontSize: 30.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
                     ),
                     Container(
-                      height: 50.0,
-                      margin:
-                          EdgeInsets.only(top: 195, left: 20.0, right: 20.0),
-                      // color: Colors.grey,
-                      width: MediaQuery.of(context).size.width,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      height: 250.0,
+                      margin: const EdgeInsets.only(top: 15.0),
+                      width: MediaQuery.of(context).size.width - 30,
+                      child: Stack(
                         children: [
                           GestureDetector(
-                            onTap: () {
-                              _pickImage();
-                            },
-                            child: Container(
-                              height: 40.0,
-                              width: 40.0,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10.0),
-                                color: Colors.white,
-                              ),
-                              child: const Icon(
-                                Icons.camera_alt_outlined,
-                                color: Colors.grey,
-                              ),
+                            onTap: () {},
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(20.0),
+                              child: widget.img == ""
+                                  ? Container(
+                                      height: 220.0,
+                                      width: MediaQuery.of(context).size.width -
+                                          20.0,
+                                      color: Colors.grey,
+                                    )
+                                  : Container(
+                                      color: Colors.grey.withOpacity(0.4),
+                                      child: Image.file(
+                                        File(widget.img),
+                                        fit: BoxFit.contain,
+                                        height: 220.0,
+                                        width:
+                                            MediaQuery.of(context).size.width -
+                                                20.0,
+                                      ),
+                                    ),
                             ),
                           ),
                           Container(
-                            height: 40.0,
-                            // width: 40.0,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10.0),
-                              color: Colors.white,
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 15.0, vertical: 10.0),
-                            child: Text(
-                              _name + ": " + _confidence.substring(0, 5) + "%",
-                              style: GoogleFonts.roboto(color: Colors.black),
+                            height: 50.0,
+                            margin: const EdgeInsets.only(
+                                top: 195, left: 20.0, right: 20.0),
+                            // color: Colors.grey,
+                            width: MediaQuery.of(context).size.width,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    _pickImage();
+                                  },
+                                  child: Container(
+                                    height: 40.0,
+                                    width: 40.0,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      color: Colors.white,
+                                    ),
+                                    child: const Icon(
+                                      Icons.camera_alt_outlined,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  height: 40.0,
+                                  // width: 40.0,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    color: Colors.white,
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 15.0, vertical: 10.0),
+                                  child: Text(
+                                    _name +
+                                        ": " +
+                                        _confidence.substring(0, 5) +
+                                        "%",
+                                    style:
+                                        GoogleFonts.roboto(color: Colors.black),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
                       ),
                     ),
-                  ],
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(bottom: 10.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Caption Theme:",
-                      style: GoogleFonts.notoSans(
-                        fontSize: 18.0,
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 10.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Caption Theme:",
+                            style: GoogleFonts.notoSans(
+                              fontSize: 18.0,
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Radio(
+                                      value: _name,
+                                      groupValue: selected,
+                                      autofocus: true,
+                                      fillColor: MaterialStateColor.resolveWith(
+                                          (states) => const Color(0xff1f0a45)),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          selected = value.toString();
+                                          print(value.toString());
+                                        });
+                                      }),
+                                  Text(
+                                    _name,
+                                    style: GoogleFonts.notoSans(),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Radio(
+                                      value: "other",
+                                      groupValue: selected,
+                                      fillColor: MaterialStateColor.resolveWith(
+                                          (states) => const Color(0xff1f0a45)),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          selected = value.toString();
+                                          print(value.toString());
+                                        });
+                                      }),
+                                  Text(
+                                    "Other",
+                                    style: GoogleFonts.notoSans(),
+                                  ),
+                                ],
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  randomize(10);
+                                },
+                                child: Container(
+                                    width: 40.0,
+                                    height: 40.0,
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xff1f0a45),
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
+                                    child: IconButton(
+                                      onPressed: () {
+                                        if (selected.toLowerCase() == "other") {
+                                          randomize(1);
+                                        } else {
+                                          randomize(0);
+                                        }
+                                      },
+                                      icon: const Icon(
+                                        Icons.refresh_outlined,
+                                        color: Colors.white,
+                                      ),
+                                    )),
+                              )
+                            ],
+                          )
+                        ],
                       ),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Radio(
-                                value: _name,
-                                groupValue: selected,
-                                autofocus: true,
-                                fillColor: MaterialStateColor.resolveWith(
-                                    (states) => Color(0xff1f0a45)),
-                                onChanged: (value) {
-                                  setState(() {
-                                    selected = value.toString();
-                                    print(value.toString());
-                                  });
-                                }),
-                            Text(
-                              _name,
-                              style: GoogleFonts.notoSans(),
-                            ),
-                          ],
+                    TextFormField(
+                      controller: myController,
+                      keyboardType: TextInputType.multiline,
+                      minLines: 2, //Normal textInputField will be displayed
+                      maxLines: 5,
+                      decoration: const InputDecoration(
+                          labelText: 'Enter Caption',
+                          hintText: 'Type Something.',
+                          labelStyle: TextStyle(
+                            color: Color(0xff1f0a45),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            borderSide: BorderSide(
+                                color: Color(0xff1f0a45), width: 2.0),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                          )),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        uploadPic();
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.only(top: 30.0),
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 60.0, vertical: 10.0),
+                        decoration: BoxDecoration(
+                            color: const Color(0xff1f0a45),
+                            borderRadius: BorderRadius.circular(10.0)),
+                        child: Text(
+                          "Post",
+                          style: GoogleFonts.notoSans(
+                            fontSize: 18.0,
+                            color: Colors.white,
+                          ),
+                          textAlign: TextAlign.center,
                         ),
-                        Row(
-                          children: [
-                            Radio(
-                                value: "other",
-                                groupValue: selected,
-                                fillColor: MaterialStateColor.resolveWith(
-                                    (states) => Color(0xff1f0a45)),
-                                onChanged: (value) {
-                                  setState(() {
-                                    selected = value.toString();
-                                    print(value.toString());
-                                  });
-                                }),
-                            Text(
-                              "Other",
-                              style: GoogleFonts.notoSans(),
-                            ),
-                          ],
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            randomize(10);
-                          },
-                          child: Container(
-                              width: 40.0,
-                              height: 40.0,
-                              decoration: BoxDecoration(
-                                color: Color(0xff1f0a45),
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                              child: IconButton(
-                                onPressed: () {
-                                  if (selected.toLowerCase() == "other") {
-                                    randomize(1);
-                                  } else {
-                                    randomize(0);
-                                  }
-                                },
-                                icon: const Icon(
-                                  Icons.refresh_outlined,
-                                  color: Colors.white,
-                                ),
-                              )),
-                        )
-                      ],
-                    )
+                      ),
+                    ),
                   ],
                 ),
               ),
-              TextFormField(
-                controller: myController,
-                keyboardType: TextInputType.multiline,
-                minLines: 2, //Normal textInputField will be displayed
-                maxLines: 5,
-                decoration: const InputDecoration(
-                    labelText: 'Enter Caption',
-                    hintText: 'Type Something.',
-                    labelStyle: TextStyle(
-                      color: Color(0xff1f0a45),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                      borderSide: const BorderSide(
-                          color: Color(0xff1f0a45), width: 2.0),
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                    )),
-              ),
-              GestureDetector(
-                onTap: () {
-                  uploadPic();
-                },
-                child: Container(
-                  margin: EdgeInsets.only(top: 30.0),
-                  alignment: Alignment.center,
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 60.0, vertical: 10.0),
-                  decoration: BoxDecoration(
-                      color: Color(0xff1f0a45),
-                      borderRadius: BorderRadius.circular(10.0)),
-                  child: Text(
-                    "Post",
-                    style: GoogleFonts.notoSans(
-                      fontSize: 18.0,
-                      color: Colors.white,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+            )
+          : const Center(
+              child: Text("Loading..."),
+            ),
     );
   }
 }
