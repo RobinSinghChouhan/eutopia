@@ -10,6 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:google_fonts/google_fonts.dart';
+import "package:flutter_feather_icons/flutter_feather_icons.dart";
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key, required this.user}) : super(key: key);
@@ -59,41 +60,103 @@ class _MainScreenState extends State<MainScreen> {
       //   child: Icon(Icons.add),
       //   backgroundColor: Colors.red,
       // ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.blue,
-        child: const Icon(
-          Icons.qr_code_scanner_rounded,
-          size: 28,
+      // floatingActionButton: FloatingActionButton(
+      //   backgroundColor: Colors.blue,
+      //   child: const Icon(
+      //     Icons.qr_code_scanner_rounded,
+      //     size: 28,
+      //   ),
+      //   onPressed: () async {
+      //     _pickImage();
+      //     setState(() {
+      //       //   _pickImage();
+      //       // if (img_path == "") {
+      //       // } else {
+      //       if (img_path == "") {
+      //         selected = 0;
+      //       } else {}
+      //       // }
+      //     });
+      //   },
+      //   //params
+      // ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+      // bottomNavigationBar: AnimatedBottomNavigationBar(
+      //   onTap: (index) {
+      //     setState(() {
+      //       selected = index;
+      //       print("Indexd: " + index.toString());
+      //     });
+      //   },
+      //   icons: const [Icons.home, Icons.settings],
+      //   activeIndex: selected,
+      //   gapLocation: GapLocation.center,
+      //   iconSize: 28,
+      //   activeColor: Colors.red,
+      //   splashRadius: 20,
+      //   notchSmoothness: NotchSmoothness.verySmoothEdge,
+      // ),
+      bottomNavigationBar: Container(
+        margin:
+            const EdgeInsets.only(left: 5.0, right: 5.0, bottom: 5.0, top: 5.0),
+        padding: const EdgeInsets.symmetric(
+          horizontal: 20.0,
         ),
-        onPressed: () async {
-          _pickImage();
-          setState(() {
-            //   _pickImage();
-            // if (img_path == "") {
-            // } else {
-            if (img_path == "") {
-              selected = 0;
-            } else {}
-            // }
-          });
-        },
-        //params
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: AnimatedBottomNavigationBar(
-        onTap: (index) {
-          setState(() {
-            selected = index;
-            print("Indexd: " + index.toString());
-          });
-        },
-        icons: const [Icons.home, Icons.settings],
-        activeIndex: selected,
-        gapLocation: GapLocation.center,
-        iconSize: 28,
-        activeColor: Colors.red,
-        splashRadius: 20,
-        notchSmoothness: NotchSmoothness.verySmoothEdge,
+        height: 75.0,
+        decoration: BoxDecoration(
+          color: Color(0xff1f0a45),
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            IconButton(
+              onPressed: () {
+                setState(() {
+                  selected = 0;
+                });
+              },
+              icon: Icon(
+                FeatherIcons.home,
+                color: selected == 0
+                    ? Colors.white
+                    : Colors.white.withOpacity(0.7),
+              ),
+            ),
+            FloatingActionButton(
+              backgroundColor: Colors.white,
+              onPressed: () {
+                _pickImage();
+                setState(() {
+                  //   _pickImage();
+                  // if (img_path == "") {
+                  // } else {
+                  if (img_path == "") {
+                    selected = 0;
+                  } else {}
+                  // }
+                });
+              },
+              child: const Icon(
+                FeatherIcons.camera,
+                color: Color(0xff1f0a45),
+              ),
+            ),
+            IconButton(
+              onPressed: () {
+                setState(() {
+                  selected = 1;
+                });
+              },
+              icon: Icon(
+                FeatherIcons.user,
+                color: selected == 1
+                    ? Colors.white
+                    : Colors.white.withOpacity(0.6),
+              ),
+            )
+          ],
+        ),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
