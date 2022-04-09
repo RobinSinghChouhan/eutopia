@@ -26,6 +26,30 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   @override
+  void initState() {
+    Authentication.initializeFirebase();
+    User? userN = FirebaseAuth.instance.currentUser;
+    if (userN != null) {
+      Navigator.pushAndRemoveUntil(
+          // we are making YourHomePage widget the root if there is a user.
+          context,
+          MaterialPageRoute(builder: (context) => MainScreen(user: userN)),
+          (Route<dynamic> route) => false);
+    }
+    // FirebaseAuth.instance.currentUser!().then((user) {
+    //   if (user != null) {
+    //     //if there isn't any user currentUser function returns a null so we should check this case.
+    //     Navigator.pushAndRemoveUntil(
+    //         // we are making YourHomePage widget the root if there is a user.
+    //         context,
+    //         MaterialPageRoute(builder: (context) => MainScreen(user: user)),
+    //         (Route<dynamic> route) => false);
+    //   }
+    // });
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       bottomSheet: Container(

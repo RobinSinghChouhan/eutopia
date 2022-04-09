@@ -35,6 +35,7 @@ class _CommentScreenState extends State<CommentScreen> {
   Future<void> getData() async {
     // Get docs from collection reference
     print("done");
+    commentsList.clear();
     final CollectionReference _collectionRef =
         FirebaseFirestore.instance.collection('comments');
     QuerySnapshot querySnapshot =
@@ -120,7 +121,7 @@ class _CommentScreenState extends State<CommentScreen> {
                   } else {
                     status = 1;
                   }
-                }
+                } else {}
                 showDialog(
                     context: context,
                     builder: (BuildContext context) {
@@ -164,29 +165,55 @@ class _CommentScreenState extends State<CommentScreen> {
                               Text("Negative(%): " +
                                   (_negative * 100).toString().substring(0, 5)),
                               const SizedBox(
-                                height: 30.0,
+                                height: 25.0,
                               ),
-                              GestureDetector(
-                                onTap: () {
-                                  addComment(status);
-                                  print("POSITIVE: " + _positive.toString());
-                                },
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    color: const Color(0xff1f0a45),
-                                  ),
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 50.0, vertical: 10.0),
-                                  child: Text(
-                                    "Post",
-                                    style: GoogleFonts.notoSans(
-                                      fontSize: 16.0,
-                                      color: Colors.white,
+                              ElevatedButton(
+                                  onPressed: () {
+                                    addComment(status);
+                                    setState(() {
+                                      _controller.text = "";
+                                      getData();
+
+                                      Navigator.of(context, rootNavigator: true)
+                                          .pop('dialog');
+                                    });
+                                    print("POSITIVE: " + _positive.toString());
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    primary: const Color(0xff1f0a45),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
                                     ),
                                   ),
-                                ),
-                              ),
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 30.0, vertical: 10.0),
+                                    child: Text(
+                                      "Post",
+                                      style: GoogleFonts.notoSans(
+                                        fontSize: 16.0,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  )),
+                              // GestureDetector(
+                              //   onTap: () {},
+                              //   child: Container(
+                              //     decoration: BoxDecoration(
+                              //       borderRadius: BorderRadius.circular(10.0),
+                              //       color: const Color(0xff1f0a45),
+                              //     ),
+                              //     padding: const EdgeInsets.symmetric(
+                              //         horizontal: 50.0, vertical: 10.0),
+                              //     child: Text(
+                              //       "Post",
+                              //       style: GoogleFonts.notoSans(
+                              //         fontSize: 16.0,
+                              //         color: Colors.white,
+                              //       ),
+                              //     ),
+                              //   ),
+                              // ),
                             ],
                           ),
                         ),

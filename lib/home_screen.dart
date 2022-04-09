@@ -39,6 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     postsList.sort((a, b) => a.time.compareTo(b.time));
+
     //
     setState(() {
       print(postsList[0].url);
@@ -71,13 +72,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Stack(
                   children: [
                     Container(
-                      margin: EdgeInsets.symmetric(horizontal: 10.0),
+                      margin: const EdgeInsets.symmetric(horizontal: 10.0),
                       alignment: Alignment.center,
-                      padding: EdgeInsets.symmetric(
+                      padding: const EdgeInsets.symmetric(
                           horizontal: 10.0, vertical: 10.0),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10.0),
-                        color: Color(0xff1f0a45),
+                        color: const Color(0xff1f0a45),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -126,7 +127,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               ],
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 230.0,
                           ),
                           Container(
@@ -145,7 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                   ),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   width: 5.0,
                                 ),
                                 GestureDetector(
@@ -174,7 +175,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.only(top: 60.0),
+                      margin: const EdgeInsets.only(top: 60.0),
                       // color: Colors.black,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(10.0),
@@ -183,7 +184,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               const EdgeInsets.only(top: 10.0, bottom: 10.0),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10.0),
-                            color: Color(0xff8f87a3).withOpacity(0.7),
+                            color: const Color(0xff8f87a3).withOpacity(0.7),
                           ),
                           child: CachedNetworkImage(
                             imageUrl: postsList[index].url,

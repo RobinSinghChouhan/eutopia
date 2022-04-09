@@ -190,7 +190,9 @@ class _MainScreenState extends State<MainScreen> {
                   ],
                 ),
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Authentication.signOut(context: context);
+                  },
                   child: CircleAvatar(
                     radius: 25,
                     child: ClipRRect(
@@ -215,7 +217,9 @@ class _MainScreenState extends State<MainScreen> {
                   ? HomeScreen(
                       user: widget.user,
                     )
-                  : const AccountScreen()),
+                  : AccountScreen(
+                      user: widget.user,
+                    )),
         ],
       ),
     );
