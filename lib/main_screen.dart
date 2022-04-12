@@ -1,11 +1,8 @@
-import 'dart:io';
-
 import 'package:eutopia/account_screen.dart';
 import 'package:eutopia/authentication.dart';
 import 'package:eutopia/home_screen.dart';
 import 'package:eutopia/post_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -23,32 +20,56 @@ class _MainScreenState extends State<MainScreen> {
   int selected = 0;
   String img_path = "";
   final picker = ImagePicker();
-  Future<void>? _handleSignOut() {
-    Authentication.signOut(context: context);
-    return null;
-  }
+  // Future<void>? _handleSignOut() {
+  //   Authentication.signOut(context: context);
+  //   return null;
+  // }
 
   Future<void> _pickImage() async {
     final image = await picker.pickImage(source: ImageSource.gallery);
+    // if (mounted) {
     setState(() {
       img_path = image!.path;
       print("IMAGEPATH:  " + img_path);
+
       redirectNow();
     });
+    // }
     // return image!.path;
   }
 
   void redirectNow() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => PostScreen(
-          // path: img_path,
-          user: widget.user,
-          img: img_path,
-        ),
-      ),
-    );
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => PostScreen(
+              // path: img_path,
+              user: widget.user,
+              img: img_path,
+            ),
+          ));
+    });
+    // if (mounted) {
+    //   Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //       builder: (context) => PostScreen(
+    //         // path: img_path,
+    //         user: widget.user,
+    //         img: img_path,
+    //       ),
+    //     ),
+    //   );
+    // }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setState(() {});
+    // Authentication.initializeFirebase();
   }
 
   @override
@@ -104,7 +125,7 @@ class _MainScreenState extends State<MainScreen> {
         ),
         height: 75.0,
         decoration: BoxDecoration(
-          color: Color(0xff1f0a45),
+          color: const Color(0xff1f0a45),
           borderRadius: BorderRadius.circular(10.0),
         ),
         child: Row(

@@ -12,6 +12,13 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  // void initializeFirebase() {
+  //   Firebase.initializeApp().whenComplete(() {
+  //     print("completed");
+  //     // setState(() {});
+  //   });
+  // }
+
   Future<void> _handleSignIn() async {
     // try{
     //   await _googleSignIn.signIn();
@@ -21,21 +28,25 @@ class _LoginScreenState extends State<LoginScreen> {
     User? user = await Authentication.signInWithGoogle(context: context);
 
     print(user?.displayName.toString());
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => MainScreen(user: user)));
+
+    // Authentication.initializeFirebase();
+
+    Future.delayed(Duration.zero, () {
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => MainScreen(user: user)),
+          (route) => false);
+    });
+    // Navigator.pushAndRemoveUntil(
+    //     // we are making YourHomePage widget the root if there is a user.
+    //     context,
+    //     MaterialPageRoute(builder: (context) => MainScreen(user: user)),
+    //     (Route<dynamic> route) => false);
   }
 
   @override
   void initState() {
-    Authentication.initializeFirebase();
-    User? userN = FirebaseAuth.instance.currentUser;
-    if (userN != null) {
-      Navigator.pushAndRemoveUntil(
-          // we are making YourHomePage widget the root if there is a user.
-          context,
-          MaterialPageRoute(builder: (context) => MainScreen(user: userN)),
-          (Route<dynamic> route) => false);
-    }
+    // Authentication.initializeFirebase();
+    checkUser();
     // FirebaseAuth.instance.currentUser!().then((user) {
     //   if (user != null) {
     //     //if there isn't any user currentUser function returns a null so we should check this case.
@@ -47,6 +58,26 @@ class _LoginScreenState extends State<LoginScreen> {
     //   }
     // });
     super.initState();
+  }
+
+  Future<void> checkUser() async {
+    User? userN = FirebaseAuth.instance.currentUser;
+    if (userN != null && mounted) {
+      // Authentication.initializeFirebase();
+      setState(() {
+        Future.delayed(Duration.zero, () {
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => MainScreen(user: userN)),
+              (route) => false);
+        });
+
+        // Navigator.pushAndRemoveUntil(
+        //     // we are making YourHomePage widget the root if there is a user.
+        //     context,
+        //     MaterialPageRoute(builder: (context) => MainScreen(user: userN)),
+        //     (Route<dynamic> route) => false);
+      });
+    }
   }
 
   @override

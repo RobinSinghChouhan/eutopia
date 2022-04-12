@@ -126,10 +126,8 @@ class _AccountScreenState extends State<AccountScreen> {
                                 ElevatedButton(
                                   onPressed: () {
                                     Authentication.signOut(context: context);
-                                    Navigator.pop(context);
-                                    // Navigator.pop(context);
                                   },
-                                  child: Text("Yes"),
+                                  child: const Text("Yes"),
                                   style: ElevatedButton.styleFrom(
                                     primary: Colors.green,
                                   ),

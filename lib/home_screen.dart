@@ -20,6 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Posts> postsList = [];
 
   Future<void> getData() async {
+    postsList.clear();
     // Get docs from collection reference
     QuerySnapshot querySnapshot = await _collectionRef.get();
     //
@@ -38,8 +39,8 @@ class _HomeScreenState extends State<HomeScreen> {
       postsList.add(post);
     }
 
-    postsList.sort((a, b) => a.time.compareTo(b.time));
-
+    postsList.sort((b, a) => a.time.compareTo(b.time));
+    // postsList = postsList.reversed;
     //
     setState(() {
       print(postsList[0].url);
@@ -58,153 +59,164 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
-      child: MediaQuery.removePadding(
-        removeTop: true,
-        context: context,
-        child: ListView.builder(
-            itemCount: postsList.length,
-            itemBuilder: (BuildContext context, int index) {
-              return Container(
-                decoration: BoxDecoration(
-                    // color: Colors.red,
-                    borderRadius: BorderRadius.circular(15.0)),
-                margin: EdgeInsets.only(top: index == 0 ? 10.0 : 15.0),
-                child: Stack(
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 10.0),
-                      alignment: Alignment.center,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10.0, vertical: 10.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10.0),
-                        color: const Color(0xff1f0a45),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            child: Row(
-                              children: [
-                                CircleAvatar(
-                                  radius: 23,
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(25),
-                                    child: CachedNetworkImage(
-                                      imageUrl: postsList[index].user_img,
-                                      progressIndicatorBuilder: (context, url,
-                                              downloadProgress) =>
-                                          CircularProgressIndicator(
-                                              value: downloadProgress.progress),
-                                      errorWidget: (context, url, error) =>
-                                          const Icon(Icons.error),
+      child: RefreshIndicator(
+        color: const Color(0xff1f0a45),
+        onRefresh: () async {
+          setState(() {
+            getData();
+          });
+        },
+        child: MediaQuery.removePadding(
+          removeTop: true,
+          context: context,
+          child: ListView.builder(
+              itemCount: postsList.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Container(
+                  decoration: BoxDecoration(
+                      // color: Colors.red,
+                      borderRadius: BorderRadius.circular(15.0)),
+                  margin: EdgeInsets.only(top: index == 0 ? 10.0 : 15.0),
+                  child: Stack(
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 10.0),
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10.0, vertical: 10.0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: const Color(0xff1f0a45),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              child: Row(
+                                children: [
+                                  CircleAvatar(
+                                    radius: 23,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(25),
+                                      child: CachedNetworkImage(
+                                        imageUrl: postsList[index].user_img,
+                                        progressIndicatorBuilder: (context, url,
+                                                downloadProgress) =>
+                                            CircularProgressIndicator(
+                                                value:
+                                                    downloadProgress.progress),
+                                        errorWidget: (context, url, error) =>
+                                            const Icon(Icons.error),
+                                      ),
                                     ),
                                   ),
-                                ),
-                                const SizedBox(
-                                  width: 10.0,
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      postsList[index].name,
+                                  const SizedBox(
+                                    width: 10.0,
+                                  ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        postsList[index].name,
+                                        style: GoogleFonts.notoSans(
+                                          fontSize: 16.0,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      Text(
+                                        postsList[index].email.substring(0,
+                                            postsList[index].email.length - 10),
+                                        style: GoogleFonts.notoSans(
+                                          color: Colors.white.withOpacity(0.9),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 230.0,
+                            ),
+                            Container(
+                              // color: Colors.grey,
+                              // width: MediaQuery.of(context).size.width - 50.0,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      postsList[index].caption,
+                                      maxLines: 3,
                                       style: GoogleFonts.notoSans(
-                                        fontSize: 16.0,
-                                        fontWeight: FontWeight.w600,
+                                        fontSize: 14,
                                         color: Colors.white,
                                       ),
                                     ),
-                                    Text(
-                                      postsList[index].email.substring(0,
-                                          postsList[index].email.length - 10),
-                                      style: GoogleFonts.notoSans(
-                                        color: Colors.white.withOpacity(0.9),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 230.0,
-                          ),
-                          Container(
-                            // color: Colors.grey,
-                            // width: MediaQuery.of(context).size.width - 50.0,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    postsList[index].caption,
-                                    maxLines: 3,
-                                    style: GoogleFonts.notoSans(
-                                      fontSize: 14,
+                                  ),
+                                  const SizedBox(
+                                    width: 5.0,
+                                  ),
+                                  GestureDetector(
+                                    child: const Icon(
+                                      FeatherIcons.twitter,
                                       color: Colors.white,
                                     ),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 5.0,
-                                ),
-                                GestureDetector(
-                                  child: const Icon(
-                                    FeatherIcons.twitter,
-                                    color: Colors.white,
-                                  ),
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => CommentScreen(
-                                                postId: postsList[index].id,
-                                                user: widget.user,
-                                              )),
-                                    );
-                                  },
-                                )
-                              ],
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => CommentScreen(
+                                                  postId: postsList[index].id,
+                                                  user: widget.user,
+                                                )),
+                                      );
+                                    },
+                                  )
+                                ],
+                              ),
                             ),
-                          ),
-                          const SizedBox(
-                            height: 10.0,
-                          )
-                        ],
+                            const SizedBox(
+                              height: 10.0,
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 60.0),
-                      // color: Colors.black,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10.0),
-                        child: Container(
-                          margin:
-                              const EdgeInsets.only(top: 10.0, bottom: 10.0),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10.0),
-                            color: const Color(0xff8f87a3).withOpacity(0.7),
-                          ),
-                          child: CachedNetworkImage(
-                            imageUrl: postsList[index].url,
-                            progressIndicatorBuilder:
-                                (context, url, downloadProgress) =>
-                                    CircularProgressIndicator(
-                                        value: downloadProgress.progress),
-                            errorWidget: (context, url, error) =>
-                                const Icon(Icons.error),
-                            height: 200.0,
-                            width: MediaQuery.of(context).size.width - 20.0,
-                            fit: BoxFit.contain,
+                      Container(
+                        margin: const EdgeInsets.only(top: 60.0),
+                        // color: Colors.black,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10.0),
+                          child: Container(
+                            margin:
+                                const EdgeInsets.only(top: 10.0, bottom: 10.0),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10.0),
+                              color: const Color(0xff8f87a3).withOpacity(0.7),
+                            ),
+                            child: CachedNetworkImage(
+                              imageUrl: postsList[index].url,
+                              progressIndicatorBuilder:
+                                  (context, url, downloadProgress) =>
+                                      CircularProgressIndicator(
+                                          value: downloadProgress.progress),
+                              errorWidget: (context, url, error) =>
+                                  const Icon(Icons.error),
+                              height: 200.0,
+                              width: MediaQuery.of(context).size.width - 20.0,
+                              fit: BoxFit.contain,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              );
-            }),
+                    ],
+                  ),
+                );
+              }),
+        ),
       ),
     );
   }

@@ -39,6 +39,8 @@ class _PostScreenState extends State<PostScreen> {
   var predList = [];
   var otherList = [];
   bool isLoaded = false;
+  bool isUploaded = false;
+  bool isClicked = false;
 
   @override
   void initState() {
@@ -154,17 +156,20 @@ class _PostScreenState extends State<PostScreen> {
   Future<void> addUser(String url) {
     // Call the user's CollectionReference to add a new user
     CollectionReference users = FirebaseFirestore.instance.collection('posts');
-    return users
-        .add({
-          'username': widget.user?.displayName, // John Doe
-          'email': widget.user?.email,
-          'user_img': widget.user?.photoURL, // Stokes and Sons
-          'url': url,
-          'caption': myController.text,
-          'time':DateTime.now().millisecondsSinceEpoch.toString(),// 42
-        })
-        .then((value) => print("User Added"))
-        .catchError((error) => print("Failed to add user: $error"));
+    return users.add({
+      'username': widget.user?.displayName, // John Doe
+      'email': widget.user?.email,
+      'user_img': widget.user?.photoURL, // Stokes and Sons
+      'url': url,
+      'caption': myController.text,
+      'time': DateTime.now().millisecondsSinceEpoch.toString(), // 42
+    }).then((value) {
+      print("User Added");
+      setState(() {
+        isUploaded = true;
+        Navigator.pop(context);
+      });
+    }).catchError((error) => print("Failed to add user: $error"));
   }
 
   @override
@@ -396,28 +401,48 @@ class _PostScreenState extends State<PostScreen> {
                             borderRadius: BorderRadius.all(Radius.circular(10)),
                           )),
                     ),
-                    GestureDetector(
-                      onTap: () {
-                        uploadPic();
-                      },
-                      child: Container(
-                        margin: const EdgeInsets.only(top: 30.0),
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 60.0, vertical: 10.0),
-                        decoration: BoxDecoration(
-                            color: const Color(0xff1f0a45),
-                            borderRadius: BorderRadius.circular(10.0)),
-                        child: Text(
-                          "Post",
-                          style: GoogleFonts.notoSans(
-                            fontSize: 18.0,
-                            color: Colors.white,
+                    !isClicked
+                        ? GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                isClicked = true;
+                                uploadPic();
+                              });
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.only(top: 30.0),
+                              alignment: Alignment.center,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 60.0, vertical: 10.0),
+                              decoration: BoxDecoration(
+                                  color: const Color(0xff1f0a45),
+                                  borderRadius: BorderRadius.circular(10.0)),
+                              child: Text(
+                                "Post",
+                                style: GoogleFonts.notoSans(
+                                  fontSize: 18.0,
+                                  color: Colors.white,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          )
+                        : Center(
+                            child: Container(
+                              margin: const EdgeInsets.only(top: 30.0),
+                              width: 50.0,
+                              height: 50.0,
+                              alignment: Alignment.center,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 5.0, vertical: 5.0),
+                              decoration: BoxDecoration(
+                                  color: const Color(0xff1f0a45),
+                                  borderRadius: BorderRadius.circular(10.0)),
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                              ),
+                            ),
                           ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               ),

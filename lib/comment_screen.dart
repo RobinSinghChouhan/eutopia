@@ -63,7 +63,7 @@ class _CommentScreenState extends State<CommentScreen> {
       );
       commentsList.add(post);
     }
-    commentsList.sort((a, b) => a.time.compareTo(b.time));
+    commentsList.sort((b, a) => a.time.compareTo(b.time));
     //
     setState(() {
       print(commentsList[0].time.toString());
@@ -254,69 +254,78 @@ class _CommentScreenState extends State<CommentScreen> {
                 // width: MediaQuery.of(context).size.width - 30,
                 // height: MediaQuery.of(context).size.height - 100,
                 // margin: const EdgeInsets.only(top: 15.0),
-                child: MediaQuery.removePadding(
-                  removeTop: true,
-                  context: context,
-                  child: ListView.builder(
-                      itemCount: commentsList.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10.0),
-                            // color: Colors.green.withOpacity(0.15),
-                            color: commentsList[index].status == 0
-                                ? Color(0xffF5EBEB)
-                                : Color(0xffE5F4F0),
-                          ),
-                          padding: EdgeInsets.all(15.0),
-                          width: MediaQuery.of(context).size.width - 30,
-                          margin: EdgeInsets.only(top: 10.0),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              CircleAvatar(
-                                radius: 23,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(25),
-                                  child: CachedNetworkImage(
-                                    imageUrl: commentsList[index].user_img,
-                                    progressIndicatorBuilder: (context, url,
-                                            downloadProgress) =>
-                                        CircularProgressIndicator(
-                                            value: downloadProgress.progress),
-                                    errorWidget: (context, url, error) =>
-                                        const Icon(Icons.error),
+                child: RefreshIndicator(
+                  color: const Color(0xff1f0a45),
+                  onRefresh: () async {
+                    setState(() {
+                      getData();
+                    });
+                  },
+                  child: MediaQuery.removePadding(
+                    removeTop: true,
+                    context: context,
+                    child: ListView.builder(
+                        itemCount: commentsList.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10.0),
+                              // color: Colors.green.withOpacity(0.15),
+                              color: commentsList[index].status == 0
+                                  ? const Color(0xffF5EBEB)
+                                  : const Color(0xffE5F4F0),
+                            ),
+                            padding: const EdgeInsets.all(15.0),
+                            width: MediaQuery.of(context).size.width - 30,
+                            margin: const EdgeInsets.only(top: 10.0),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                CircleAvatar(
+                                  radius: 23,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(25),
+                                    child: CachedNetworkImage(
+                                      imageUrl: commentsList[index].user_img,
+                                      progressIndicatorBuilder: (context, url,
+                                              downloadProgress) =>
+                                          CircularProgressIndicator(
+                                              value: downloadProgress.progress),
+                                      errorWidget: (context, url, error) =>
+                                          const Icon(Icons.error),
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(left: 15.0),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      commentsList[index].name,
-                                      style: GoogleFonts.notoSans(
-                                        fontSize: 15.0,
-                                        fontWeight: FontWeight.w600,
+                                Container(
+                                  margin: EdgeInsets.only(left: 15.0),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        commentsList[index].name,
+                                        style: GoogleFonts.notoSans(
+                                          fontSize: 15.0,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                        textAlign: TextAlign.start,
                                       ),
-                                      textAlign: TextAlign.start,
-                                    ),
-                                    Text(
-                                      commentsList[index].comment,
-                                      style: GoogleFonts.notoSans(
-                                        color: Colors.black.withOpacity(0.7),
+                                      Text(
+                                        commentsList[index].comment,
+                                        style: GoogleFonts.notoSans(
+                                          color: Colors.black.withOpacity(0.7),
+                                        ),
+                                        textAlign: TextAlign.start,
                                       ),
-                                      textAlign: TextAlign.start,
-                                    ),
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        );
-                      }),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                          );
+                        }),
+                  ),
                 ),
               ),
             ],
