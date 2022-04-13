@@ -12,72 +12,29 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  // void initializeFirebase() {
-  //   Firebase.initializeApp().whenComplete(() {
-  //     print("completed");
-  //     // setState(() {});
-  //   });
-  // }
+  bool isClicked = false;
 
   Future<void> _handleSignIn() async {
-    // try{
-    //   await _googleSignIn.signIn();
-    // }catch(error){
-    //   print(error);
-    // }
+    setState(() {
+      isClicked = true;
+    });
     User? user = await Authentication.signInWithGoogle(context: context);
-
-    print(user?.displayName.toString());
 
     // Authentication.initializeFirebase();
 
-    Future.delayed(Duration.zero, () {
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => MainScreen(user: user)),
-          (route) => false);
-    });
-    // Navigator.pushAndRemoveUntil(
-    //     // we are making YourHomePage widget the root if there is a user.
-    //     context,
-    //     MaterialPageRoute(builder: (context) => MainScreen(user: user)),
-    //     (Route<dynamic> route) => false);
+    if (user != null) {
+      print(user.displayName.toString());
+      Future.delayed(Duration.zero, () {
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => MainScreen(user: user)),
+            (route) => false);
+      });
+    }
   }
 
   @override
   void initState() {
-    // Authentication.initializeFirebase();
-    checkUser();
-    // FirebaseAuth.instance.currentUser!().then((user) {
-    //   if (user != null) {
-    //     //if there isn't any user currentUser function returns a null so we should check this case.
-    //     Navigator.pushAndRemoveUntil(
-    //         // we are making YourHomePage widget the root if there is a user.
-    //         context,
-    //         MaterialPageRoute(builder: (context) => MainScreen(user: user)),
-    //         (Route<dynamic> route) => false);
-    //   }
-    // });
     super.initState();
-  }
-
-  Future<void> checkUser() async {
-    User? userN = FirebaseAuth.instance.currentUser;
-    if (userN != null && mounted) {
-      // Authentication.initializeFirebase();
-      setState(() {
-        Future.delayed(Duration.zero, () {
-          Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (context) => MainScreen(user: userN)),
-              (route) => false);
-        });
-
-        // Navigator.pushAndRemoveUntil(
-        //     // we are making YourHomePage widget the root if there is a user.
-        //     context,
-        //     MaterialPageRoute(builder: (context) => MainScreen(user: userN)),
-        //     (Route<dynamic> route) => false);
-      });
-    }
   }
 
   @override
@@ -151,34 +108,43 @@ class _LoginScreenState extends State<LoginScreen> {
                   if (snapshot.hasError) {
                     return Text("Error");
                   } else {
-                    return GestureDetector(
-                      onTap: _handleSignIn,
-                      child: Container(
-                        width: 190.0,
-                        color: Color(0xff4285F4),
-                        child: Row(
-                          children: [
-                            Container(
-                              margin: const EdgeInsets.only(
-                                  top: 2, bottom: 2, left: 2, right: 10),
+                    return !isClicked
+                        ? GestureDetector(
+                            onTap: _handleSignIn,
+                            child: Container(
+                              width: 190.0,
+                              color: Color(0xff4285F4),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    margin: const EdgeInsets.only(
+                                        top: 2, bottom: 2, left: 2, right: 10),
+                                    color: Colors.white,
+                                    child: Image.asset(
+                                      "assets/glogo.png",
+                                      scale: 27,
+                                    ),
+                                  ),
+                                  Text(
+                                    "Sign in with Google",
+                                    style: GoogleFonts.roboto(
+                                      fontSize: 15.0,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ))
+                        : Container(
+                            color: Color(0xff4285F4),
+                            width: 50.0,
+                            height: 50.0,
+                            padding: EdgeInsets.all(10.0),
+                            child: const CircularProgressIndicator(
                               color: Colors.white,
-                              child: Image.asset(
-                                "assets/glogo.png",
-                                scale: 27,
-                              ),
                             ),
-                            Text(
-                              "Sign in with Google",
-                              style: GoogleFonts.roboto(
-                                fontSize: 15.0,
-                                color: Colors.white,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
+                          );
                   }
                 }),
           ],

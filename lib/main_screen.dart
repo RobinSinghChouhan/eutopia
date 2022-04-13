@@ -31,7 +31,6 @@ class _MainScreenState extends State<MainScreen> {
     setState(() {
       img_path = image!.path;
       print("IMAGEPATH:  " + img_path);
-
       redirectNow();
     });
     // }

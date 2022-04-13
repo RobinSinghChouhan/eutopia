@@ -91,51 +91,47 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Container(
-                              child: Row(
-                                children: [
-                                  CircleAvatar(
-                                    radius: 23,
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(25),
-                                      child: CachedNetworkImage(
-                                        imageUrl: postsList[index].user_img,
-                                        progressIndicatorBuilder: (context, url,
-                                                downloadProgress) =>
-                                            CircularProgressIndicator(
-                                                value:
-                                                    downloadProgress.progress),
-                                        errorWidget: (context, url, error) =>
-                                            const Icon(Icons.error),
-                                      ),
+                            Row(
+                              children: [
+                                CircleAvatar(
+                                  radius: 23,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(25),
+                                    child: CachedNetworkImage(
+                                      imageUrl: postsList[index].user_img,
+                                      progressIndicatorBuilder: (context, url,
+                                              downloadProgress) =>
+                                          CircularProgressIndicator(
+                                              value: downloadProgress.progress),
+                                      errorWidget: (context, url, error) =>
+                                          const Icon(Icons.error),
                                     ),
                                   ),
-                                  const SizedBox(
-                                    width: 10.0,
-                                  ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        postsList[index].name,
-                                        style: GoogleFonts.notoSans(
-                                          fontSize: 16.0,
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.white,
-                                        ),
+                                ),
+                                const SizedBox(
+                                  width: 10.0,
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      postsList[index].name,
+                                      style: GoogleFonts.notoSans(
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.white,
                                       ),
-                                      Text(
-                                        postsList[index].email.substring(0,
-                                            postsList[index].email.length - 10),
-                                        style: GoogleFonts.notoSans(
-                                          color: Colors.white.withOpacity(0.9),
-                                        ),
+                                    ),
+                                    Text(
+                                      postsList[index].email.substring(0,
+                                          postsList[index].email.length - 10),
+                                      style: GoogleFonts.notoSans(
+                                        color: Colors.white.withOpacity(0.9),
                                       ),
-                                    ],
-                                  ),
-                                ],
-                              ),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
                             const SizedBox(
                               height: 230.0,
@@ -186,7 +182,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       Container(
-                        margin: const EdgeInsets.only(top: 60.0),
+                        margin: EdgeInsets.only(
+                            top: MediaQuery.of(context).size.height * 0.07),
                         // color: Colors.black,
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(10.0),
@@ -205,7 +202,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           value: downloadProgress.progress),
                               errorWidget: (context, url, error) =>
                                   const Icon(Icons.error),
-                              height: 200.0,
+                              height: MediaQuery.of(context).size.height * 0.25,
                               width: MediaQuery.of(context).size.width - 20.0,
                               fit: BoxFit.contain,
                             ),
